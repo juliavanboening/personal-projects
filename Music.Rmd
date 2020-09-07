@@ -1,0 +1,444 @@
+---
+title: "How do College Students View and Listen to Music?"
+author: "Julia Van Boening"
+output: html_document
+---
+
+### Introduction
+One thing I like to do in my free time is listen to music. This interest of mine started to develop in college as I noticed so many students listen to music while they study or walk to class. When and where I listen to music, what music I listen to, and what playlists I should create so my friends can see what I listen to has evolved over the course of my three years at California Polytechnic State University - San Luis Obispo. Music and streaming platforms have become another form of social media, and part of my generation's identity. Therefore, I wanted to create a questionnaire to see how college students view and listen to music. 
+
+### Data
+I decided to use Google Forms as it is cost effective, easy to use and read, fast to create, and every respondent is familiar with it. Even though these responses are random and anonymous, I achieved the data by putting a link in my Instagram bio and asking my followers to take it from my Instagram Story. Therefore, there is bias in this analysis as most of the respondents probably go to Cal Poly, and they had to see my story and follow me in order to take the questionnaire. After eliminating 1 respondent who was not in college, the data has 30 observations, which is a large enough sample size to use when looking for statistical significance. The last 2 questions of the questionnaire are for my own personal enjoyment and curiosity as Post Malone is one of my favorite artists. 
+
+```{r include=FALSE}
+#necessary libraries 
+
+library(plyr)
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(kableExtra)
+library(tidyverse)
+library(gridExtra)
+```
+
+```{r warning=FALSE, include=FALSE}
+#read in the data
+
+data <- read.csv("Music (Responses).csv")
+```
+
+```{r include=FALSE}
+#delete data from the 14 year old by removing row 23
+
+data <- data[-c(23),]
+```
+
+```{r include=FALSE}
+#rename columnm headers so easier to work with 
+
+data <- data %>%
+  rename(age = "How.old.are.you.", platform = "What.music.streaming.platform.do.you.use.", pay = "Do.you.pay.to.listen.to.music.", money = "About.how.much.do.you.pay.to.listen.to.music.", highest = "What.is.the.HIGHEST.amount.you.would.be.willing.to.pay.to.listen.to.unlimited.music.with.no.ads.", share = "Do.you.share.an.account.with.someone.", artist = "What.artist.do.you.listen.to.the.most.", study = "Do.you.listen.to.music.when.you.study.", therapy = "Do.you.find.music.theraputic.", escape = "Do.you.use.music.as.an.escape.", important = "On.a.scale.of.1.to.10..how.important.is.music.to.you.", posty = "Do.you.like.Post.Malone.", malone = "If.answered.yes.above..what.is.your.favorite.song.by.Post.Malone.")
+```
+
+#### Bar Charts 
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing age of the respondents
+
+ggplot(mapping=aes(x=age)) + geom_histogram(data = data, fill = "red", binwidth =0.5) + scale_x_continuous(breaks = c(18,19,20,21,22,23)) + labs(title = "How old are you?", y = "Count", x = "Age")
+```
+
+```{r echo=FALSE}
+#Summary of age of the respondents 
+
+summary <- data %>% group_by(age) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing how many people use Spotify and Apple Music
+
+ggplot(mapping=aes(x=platform)) + geom_histogram(data = data, fill = "blue", stat = "count") + labs(title = "What music streaming platform do you use?", y = "Count", x = "Platform")
+```
+
+```{r echo=FALSE}
+#Summary of who uses Apple Music and Spotify
+
+summary <- data %>% group_by(platform) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing who pays to listen to music
+
+ggplot(mapping=aes(x=pay)) + geom_histogram(data = data, fill = "purple", stat = "count") + labs(title = "Do you pay to listen to music?", y = "Count", x = "Answers")
+```
+
+```{r echo=FALSE}
+#Summary of who pays to listen to music
+
+summary <- data %>% group_by(pay) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing how much people pay to listen to music
+
+ggplot(mapping=aes(x=money)) + geom_histogram(data = data, fill = "orange", stat = "count") + labs(title = "About how much do you pay to listen to music?", y = "Count", x = "Amount")
+```
+
+```{r echo=FALSE}
+#Summary of how much people pay to listen to music
+
+summary <- data %>% group_by(money) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing the HIGHEST amout people would be willing to pay to listen to unlimited music with no ads 
+
+ggplot(mapping=aes(x=highest)) + geom_histogram(data = data, fill = "green", stat = "count") + labs(title = "What is the HIGHEST amount you would be willing to pay to listen to unlimited 
+music with no ads?", y = "Count", x = "Amount")
+```
+
+```{r echo=FALSE}
+#Summary of the HIGHEST amout people would be willing to pay to listen to unlimited music with no ads 
+
+summary <- data %>% group_by(highest) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing if people share a streaming account with someone
+
+ggplot(mapping=aes(x=share)) + geom_histogram(data = data, fill = "yellow", stat = "count") + labs(title = "Do you share an account with someone?", y = "Count", x = "Answer")
+```
+
+```{r echo=FALSE}
+#Summary of people who share a streaming account with someone
+
+summary <- data %>% group_by(share) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#combine the same artist that are spelt differently 
+
+data$artist <- revalue(data$artist, c("Ben rector "= 'Ben Rector'))
+data$artist <- revalue(data$artist, c("country"= 'Anything Country'))
+data$artist <- revalue(data$artist, c("Like Combs"= 'Luke Combs'))
+data$artist <- revalue(data$artist, c("No specific artist I listen to the most"= NA))
+
+#Barchart showing what artists the respondents listen to the most
+
+ggplot(mapping=aes(x=artist)) + geom_histogram(data = data, fill = "pink", stat = "count") + labs(title = "What artist do you listen to the most?", y = "Count", x = "Answer") +  theme(axis.text.x=element_text(angle = 60, hjust = 1))
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Summary of the artists the respondents listen to the most 
+
+summary <- data %>% group_by(artist) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+***note: 7 people did not answer, + the 1 NA***
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing who listens to music when they study
+
+ggplot(mapping=aes(x=study)) + geom_histogram(data = data, fill = "red", stat = "count") + labs(title = "Do you listen to music when you study?", y = "Count", x = "Answer")
+```
+
+```{r echo=FALSE}
+#Summary of who listens to music when they study 
+
+summary <- data %>% group_by(study) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart on how many people find music theraputic
+
+ggplot(mapping=aes(x=therapy)) + geom_histogram(data = data, fill = "purple", stat = "count") + labs(title = "Do you find music therapeutic?", y = "Count", x = "Answer")
+```
+
+```{r echo=FALSE}
+#Summary of how many people find music theraputic
+
+summary <- data %>% group_by(therapy) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing how many people use music as an escape
+
+ggplot(mapping=aes(x=escape)) + geom_histogram(data = data, fill = "blue", stat = "count") + labs(title = "Do you use music as an escape?", y = "Count", x = "Answer")
+```
+
+```{r echo=FALSE}
+#Summary of how many people use music as an escape 
+
+summary <- data %>% group_by(escape) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing how important music is to the respondents
+
+ggplot(mapping=aes(x=important)) + geom_histogram(data = data, fill = "orange", stat = "count") + labs(title = "On a scale of 1 to 10, how important is music to you?", y = "Count", x = "Scale with 1 being not important at all and 10 being very, very important") + scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10))
+```
+
+```{r echo=FALSE}
+#Summary on how important music is to the respondents 
+
+summary <- data %>% group_by(important) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Barchart showing how many people like Post Malone
+
+ggplot(mapping=aes(x=posty)) + geom_histogram(data = data, fill = "green", stat = "count") + labs(title = "Do you like Post Malone?", y = "Count", x = "Answer")
+```
+
+```{r echo=FALSE}
+#Summary of how many people like Post Malone
+
+summary <- data %>% group_by(posty) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+```{r echo=FALSE, warning=FALSE}
+#combine all responses that did not name a song 
+data$malone <- revalue(data$malone, c("I don’t know :) "= NA))
+data$malone <- revalue(data$malone, c("Too many to name"= NA))
+
+#Barchart showing the respondents favorite Post Malone songs
+
+ggplot(mapping=aes(x=malone)) + geom_histogram(data = data, fill = "pink", stat = "count") + labs(title = "If answered yes above, what is your favorite song by Post Malone?", y = "Count", x = "Answer") + theme(axis.text.x=element_text(angle = 60, hjust = 1))
+```
+
+```{r echo=FALSE, warning=FALSE}
+#Summary on the respondents favortie Post Malone songs
+summary <- data %>% group_by(malone) %>% summarise(n=n()) 
+  
+summary <- summary %>% t() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped","condensed","bordereed"), full_width= T, position = "left")
+
+summary
+```
+
+***note: 5 people did not respond, + the 2 NA***
+
+#### Multi-Variable Linear Regression Models
+
+Before using a regression model, you have to ensure that it is statistically significant.
+
+The summary statistics tells us a number of things. One of them is the model p-Value (bottom last line) and the p-value of individual predictor variables (extreme right column under ‘Coefficients’). The p-values are very important because we can consider a linear model to be statistically significant only when both of these p-values are less than the pre-determined statistical significance level, which is ideally 0.05. This is visually interpreted by the significance stars at the end of the row. The more stars beside the variable’s p-value, the more significant the variable.
+
+```{r include=FALSE}
+#baselines for regession models
+data$platform = relevel(data$platform, "Spotify")
+data$pay = relevel(data$pay, "Yes")
+data$money = relevel(data$money, "$5 per month or less")
+data$highest = relevel(data$highest, "$10 per month")
+data$share = relevel(data$share, "Yes")
+data$study = relevel(data$study, "All the time")
+data$therapy = relevel(data$therapy, "Yes")
+data$escape = relevel(data$escape, "Yes")
+```
+
+***Linear Regression Model Predicting Music Platform Used*** 
+```{r echo=FALSE}
+#change categorical to numerical by using 1 and 0 
+new_data <- data %>%
+  select(age, platform, pay, money, highest, share, study, therapy, escape, important) %>%
+  mutate(platform = case_when(platform == "Spotify"~ 1,
+                              T~0))
+
+#linear regression model predicting platform 
+linear_model <- lm(platform ~ age + pay + money + highest + share + study + therapy + escape + important, data = new_data)
+
+#p-value
+summary(linear_model)
+```
+
+The model has a significant p-value of 0.0051, and the predictor variables that also have a significant p-value are age, study, and therapy. This means there is a relationship between the music platform someone uses and their age, if they listen to music when they study, and if they find music theraputic. 
+
+***Linear Regression Model Predicting if Someone Listens to Music when they Study*** 
+```{r echo=FALSE}
+#change categorical to numerical by using 1 and 0 
+new_data1 <- data %>%
+  select(age, platform, pay, money, highest, share, study, therapy, escape, important) %>%
+  mutate(study = case_when(study == "Sometimes"~ 1,
+                              T~0))
+
+#linear regression model predicting study 
+linear_model <- lm(study ~ age + pay + money + highest + share + platform + therapy + escape + important, data = new_data1)
+
+#p-value
+summary(linear_model)
+```
+
+The model has a significant p-value of 0.001456, and the predictor variables that also have a significant p-value are money, share, platform, and therapy. This means there is a relationship between if someone listens to music when they study and how much money they pay to listen to music, if they share their account, the music platform they use, and if they find music theraputic. 
+
+***Linear Regression Model Predicting if Someone Finds Music Therapeutic*** 
+```{r echo=FALSE}
+#change categorical to numerical by using 1 and 0
+new_data2 <- data %>%
+  select(age, platform, pay, money, highest, share, study, therapy, escape, important) %>%
+  mutate(therapy = case_when(therapy == "Yes"~ 1,
+                              T~0))
+
+#linear regression model predicting therapy 
+linear_model <- lm(therapy ~ age + pay + money + highest + share + platform + study + escape + important, data = new_data2)
+
+#p-value
+summary(linear_model)
+```
+
+The model has a significant p-value of 0.01559, and the predictor variables that also have a significant p-value are share, platform, and study. This means there is a relationship between if someone finds music theraputic and if they share their account, the music platform they use, and if they listen to music when they study. 
+
+***Linear Regression Model Predicting if Someone uses Music as an Escape***
+```{r echo=FALSE}
+#change categorical to numerical by using 1 and 0
+new_data3 <- data %>%
+  select(age, platform, pay, money, highest, share, study, therapy, escape, important) %>%
+  mutate(escape = case_when(escape == "Yes"~ 1,
+                              T~0))
+
+#linear regression model predicting escape 
+linear_model <- lm(escape ~ age + pay + money + highest + share + platform + study + therapy + important, data = new_data3)
+
+#p-value
+summary(linear_model)
+```
+
+This model does NOT have a significant p-value meaning using music as an escape is not predicted by anything.
+
+***Linear Regression Model Predicting how Important Music is to Someone***
+```{r echo=FALSE}
+#linear regression model predicting important 
+linear_model <- lm(important ~ age + pay + money + highest + share + platform + study + therapy + escape, data = data)
+
+#p-value
+summary(linear_model)
+```
+
+This model does NOT have a significant p-value meaning how important music is to someone is not predicted by anything.
+
+***Linear Regression Model Predicting how much Money Someone Pays to Listen to Music***
+```{r echo=FALSE}
+#change categorical to numerical by using 1 and 0
+new_data4 <- data %>%
+  select(age, platform, pay, money, highest, share, study, therapy, escape, important) %>%
+  mutate(money = case_when(money == "$5 per month or less"~ 1,
+                              T~0))
+
+#linear regression model predicting money 
+linear_model <- lm(money ~ age + pay + escape + highest + share + platform + study + therapy + important, data = new_data4)
+
+#p-value
+summary(linear_model)
+```
+
+This model does NOT have a significant p-value meaning how much money someone pays to listen to music is not predicted by anything.
+
+***Linear Regression Model Predicting if Someone Shares their Account*** 
+```{r echo=FALSE}
+#change categorical to numerical by using 1 and 0
+new_data5 <- data %>%
+  select(age, platform, pay, money, highest, share, study, therapy, escape, important) %>%
+  mutate(share = case_when(share == "Yes"~ 1,
+                              T~0))
+
+#linear regression model predicting money 
+linear_model <- lm(share ~ age + pay + escape + highest + money + platform + study + therapy + important, data = new_data5)
+
+#p-value
+summary(linear_model)
+```
+
+This model does NOT have a significant p-value meaning sharing an account is not predicted by anything.
+
+***Linear Regression Model Predicting what is the Highest Amount Someone would be willing to Pay to Listen to Unlimited Music with No Ads***
+```{r echo=FALSE}
+#change categorical to numerical by using 1 and 0
+new_data6 <- data %>%
+  select(age, platform, pay, money, highest, share, study, therapy, escape, important) %>%
+  mutate(highest = case_when(highest == "$10 per month"~ 1,
+                              T~0))
+
+#linear regression model predicting money 
+linear_model <- lm(highest ~ age + pay + escape + share + money + platform + study + therapy + important, data = new_data6)
+
+#p-value
+summary(linear_model)
+```
+
+This model does NOT have a significant p-value meaning the highest amount someone would be willing to pay to listen to unlimited music with no ads is not predicted by anything.
+
+
+
