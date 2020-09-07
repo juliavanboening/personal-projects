@@ -1,0 +1,232 @@
+---
+title: "Water Analysis"
+name: "Julia Van Boening"
+date: "April 25, 2020"
+output: html_document
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(readxl)
+library(dplyr)
+library(kableExtra)
+library(gridExtra)
+```
+
+```{r include=FALSE}
+data <- read_excel("Updated Data.xlsx")
+
+dataset <- read_excel("Updated Control Group.xlsx")
+```
+
+### Goal 
+Characterize the effects of using a smart home- wide water monitor in hopes of reducing water usage. We will do this by comparing the water usage in households in 2018 and in 2019 to see if the monitor helped reduce water usage.
+
+### Data
+We took a random sample of households in San Luis Obispo, and distributed the monitors. Our experimental group consists of 200 households; however, our control group only consists of 80 households. This may have diminished the significance of the results so in order to get a more accurate result, we simulated a mean of 80 different samples 1000 times from the experimental group. This way, the sample is completely randomized, and the experimental group and control group have the same sample size. Note: did not take into account households that had missing data as well extreme outliers. The experimental group had the smart home-wide water monitor while the control group did not. For both groups, we recorded their water usage from August 2018 to October 2018, and again in August 2019 to October 2019. Also important to note that we have access to water usage to the nearest full "unit", where one unit equals 748 gallons.  
+
+Update: After looking at the control group more closely, 2 more observations were found to be  outliers and have missing data. Therefore, our control group now consists of 78 households. Since the simulation was already done, we are going to keep our experimental group at 80 households since these two sample sizes are only 2 observations apart. 
+
+### Paired t-test
+The test we will be using to see if there is a statistically significant difference between water usage in 2018 (before the monitor) and in 2019 (after the monitor) is a paired t-test. This test is used to compare two population means that are from the same observation.
+
+### Analysis 
+
+#### Total 
+
+```{r echo=FALSE}
+ggplot(data, aes(household.number, y = Number, color = Total)) + geom_point(aes(y=Total_Usage_2018, col = "2018")) + geom_point(aes(y=Total_Usage_2019, col = "2019")) + labs(title = "Total Water Usage per Household (Experimental Group)", y = "Water Usage(units)", x = "Households")
+```
+
+This scatter plot shows the total water usage for each house in 2018 (before the water monitor), and again in 2019 (after the water monitor).      
+
+```{r echo=FALSE}
+set.seed(300)
+total <- replicate(1000,mean(sample(data$Total_Usage_2018,80)))
+#mean(total)
+#var(total)
+
+tot <- replicate(1000,mean(sample(data$Total_Usage_2019,80)))
+#mean(tot)
+#var(tot)
+
+t.test(tot,total,paired=TRUE)
+```
+
+The total mean water usage in 2018 was 28.14 units and the variance was 3 units. The total mean water usage in 2019 was 26 units and the variance was 2.81.
+
+The test shows that on average, the total water usage in 2019 measured 2.14 units lower than in 2018. The small p-value of 2.2e-16 indicates that this difference is statistically significant; therefore, we can say the monitor helped reduce total water usage in these households. 
+
+```{r echo=FALSE}
+ggplot(dataset, aes(Number, y = Number, color = Total)) + geom_point(aes(y=Total_2018, col = "2018")) + geom_point(aes(y=Total_2019, col = "2019")) + labs(title = "Total Water Usage per Household (Control Group)", y = "Water Usage(units)", x = "Households")
+```
+
+This scatter plot shows the total water usage for each house in 2018 and again in 2019. This group did not have the water monitor.
+
+```{r echo=FALSE}
+#mean(dataset$Total_2018)
+#mean(dataset$Total_2019)
+t.test(dataset$Total_2019,dataset$Total_2018,paired=TRUE)
+```
+
+The total mean water usage in 2018 was 32.32 units. The total mean water usage in 2019 was 26.18 units.
+
+The test shows that on average, the total water usage in 2019 measured 6.14 units lower than in 2018. The small p-value of 0.008 indicates that this difference is statistically significant, and not due to random chance. 
+
+#### Experimental Group 
+
+```{r echo=FALSE}
+ggplot(data, aes(household.number, y = Number, color = August)) + geom_point(aes(y = Aug_2018, col = "2018")) + geom_point(aes(y = Aug_2019, col = "2019")) + labs(title = "Water Usage in August per Household", y = "Water Usage(units)", x = "Households")
+```
+
+This scatter plot shows the water usage for each house in August 2018 and August 2019. 
+
+```{r echo=FALSE}
+set.seed(301)
+water <- replicate(1000,mean(sample(data$Aug_2018,80)))
+#mean(water)
+#var(water)
+
+agua <- replicate(1000,mean(sample(data$Aug_2019,80)))
+#mean(agua)
+#var(agua)
+
+t.test(agua,water,paired=TRUE)
+```
+
+The mean water usage in August in 2018 was 10.86 units and the variance was 0.47 units. The mean water usage in August in 2019 was 9.2 units and the variance was 0.50.
+
+The test shows that on average, the water usage in August 2019 measured 1.66 units lower than in August 2018. The small p-value of 2.2e-16 indicates that this difference is statistically significant; therefore, we can say the monitor helped reduced water usage in August. 
+
+```{r echo=FALSE}
+ggplot(data, aes(household.number, y = Number, color = September)) + geom_point(aes(y = Sep_2018, col = "2018")) + geom_point(aes(y=Sep_2019, col = "2019")) + labs(title = "Water Usage in September per Household", y = "Water Usage(units)", x = "Households")
+```
+
+This scatter plot shows the water usage for each house in September 2018 and September 2019. 
+
+```{r echo=FALSE}
+set.seed(302)
+x <- replicate(1000,mean(sample(data$Sep_2018,80)))
+#mean(x)
+#var(x)
+
+y <- replicate(1000,mean(sample(data$Sep_2019,80)))
+#mean(y)
+#var(y)
+
+t.test(y,x,paired=TRUE)
+```
+
+The mean water usage in September in 2018 was 8.57 units and the variance was 0.29 units. The mean water usage in September in 2019 was 8.39 units and the variance was 0.31.
+
+The test shows that on average, the water usage in September 2019 measured 0.18 units lower than in September 2018. The small p-value of 1.425e-12 indicates that this difference is statistically significant; therefore, we can say the monitor helped reduced water usage in September.
+
+```{r echo=FALSE}
+ggplot(data, aes(household.number, y = Number, color = October)) + geom_point(aes(y=Oct_2018, col = "2018")) + geom_point(aes(y = Oct_2019, col = "2019")) + labs(title = "Water Usage in October per Household", y = "Water Usage(units)", x = "Households") 
+```
+
+This scatter plot shows the water usage for each house in October 2018 and October 2019. 
+
+```{r echo=FALSE}
+set.seed(345)
+j <- replicate(1000,mean(sample(data$Oct_2018,80)))
+#mean(j)
+#var(j)
+
+k <- replicate(1000,mean(sample(data$Oct_2019,80)))
+#mean(k)
+#var(k)
+
+t.test(k,j,paired=TRUE)
+```
+
+The mean water usage in October in 2018 was 8.66 units and the variance was 0.25 units. The mean water usage in October in 2019 was 8.49 units and the variance was 0.27.
+
+The test shows that on average, the water usage in October 2019 measured 0.17 units lower than in October 2018. The small p-value of 2.139e-13 indicates that this difference is statistically significant; therefore, we can say the monitor helped reduced water usage in October.   
+
+#### Control Group 
+
+```{r echo=FALSE}
+ggplot(dataset, aes(Number, y = Number, color = August)) + geom_point(aes(y=Aug_18,col = "2018")) + geom_point(aes(y=Aug_19,col = "2019")) + labs(title = "Water Usage in August per Household", y = "Water Usage(units)", x = "Households")
+```
+
+This scatter plot shows the water usage for each house in August 2018 and August 2019.   
+
+```{r echo=FALSE}
+#mean(dataset$Aug_18)
+#mean(dataset$Aug_19)
+t.test(dataset$Aug_19,dataset$Aug_18,paired=TRUE)
+```
+
+The mean water usage in August in 2018 was 11.88 units. The mean water usage in August in 2019 was 8.86 units.
+
+The test shows that on average, the water usage in August 2019 measured 3.03 units lower than in August 2018. The small p-value of 0.0003 indicates that this difference is statistically significant. 
+
+```{r echo=FALSE}
+ggplot(dataset, aes(Number, y = Number, color = September)) + geom_point(aes(y=Sep_18, col = "2018")) + geom_point(aes(y=Sep_19, col = "2019")) + labs(title = "Water Usage in September per Household", y = "Water Usage(units)", x = "Households")
+```
+
+This scatter plot shows the water usage for each house in September 2018 and September 2019.
+
+```{r echo=FALSE}
+#mean(dataset$Sep_18)
+#mean(dataset$Sep_19)
+t.test(dataset$Sep_19,dataset$Sep_18,paired=TRUE)
+```
+
+The mean water usage in September in 2018 was 9.97 units. The mean water usage in September in 2019 was 8.47 units.
+
+The test shows that on average, the water usage in September 2019 measured 1.5 units lower than in September 2018. However, the large p-value of 0.14 indicates that this difference is not statistically significant and is due to random chance.
+
+```{r echo=FALSE}
+ggplot(dataset, aes(Number, y = Number, color = October)) + geom_point(aes(y=Oct_18, col = "2018")) + geom_point(aes(y=Oct_19, col = "2019")) + labs(title = "Water Usage in October per Household", y = "Water Usage(units)", x = "Households")
+```
+
+This scatter plot shows the water usage for each house in October 2018 and October 2019.  
+
+```{r echo=FALSE}
+#mean(dataset$Oct_18)
+#mean(dataset$Oct_19)
+t.test(dataset$Oct_19,dataset$Oct_18,paired=TRUE)
+```
+
+The mean water usage in October in 2018 was 10.46 units. The mean water usage in October in 2019 was 8.85 units.
+
+The test shows that on average, the water usage in October 2019 measured 1.62 units lower than in October 2018. However, the large p-value of 0.07 indicates that this difference is not statistically significant and is due to random chance.  
+
+### Conclusion 
+In total, the control group had a larger difference than the experimental group. Both had a small p-value so both were statistically significant. This could mean an extraneous factor was causing households from both groups to have less water usage, and that it was not necessarily due to the help of the water monitor. For August, the control group had a larger difference than the experimental group. Both had a small p-value so both were statistically significant. For September, the control group had a larger difference than the experimental group; however, the control group had a large p-value meaning the difference is not statistically significant and is due to random chance while the experimental group had a small p-value. This means for September the water monitor did help reduce water usage. For October, the control group had a larger difference than the experimental group; however, the control group had a large p-value meaning the difference is not statistically significant and is due to random chance while the experimental group had a small p-value. This means for October the water monitor did help reduce water usage. 
+
+Not taking into account the missing data and outlier found in the control group decreased the group's differences, and increased their p-values. Even though the group had bigger differences compared to the experimental group, their p-values were large meaning the differences were not statistically significant and due to random chance and extraneous factors. Decreasing the experimental group's sample size and simulating 80 different samples 1000 times may have not decreased the differences, but it did decrease the p-values meaning the water monitor did help reduce water usage for each month and in total. 
+
+Looking at the means from both groups, the control group had bigger mean water usage in total and for each month in 2018 than the experimental group. If households all together in San Luis Obispo started using less water in 2019, this could be why their difference is more. 
+
+Variance measures how far a set of data is spread out. The experimental group each month and in total had pretty small variances. This indicates that the data points tend to be very close to the mean and to each other. 
+
+Let's compare. Below are the results from the previous analysis with an experimental group sample size of 200, and this analysis with the new simulated sample size. The first data frame is the old analysis, and the second is the new one. The first row is the difference in water usage from 2018 to 2019, the second row is the p-value, and the column name indicates where the numbers come from. 
+
+***Old Analysis***
+```{r echo=FALSE}
+x <- data.frame(TotalExper.=c("-4.64","0.02"),TotalCon.=c("-12.76","0.0001"),AugExper.=c("-1.63","4.12e-06"),SeptExper.=c("-0.21","0.45"),OctExper.=c("-0.24","0.33"),AugCon.=c("-3.09","0.0002"),SeptCon.=c("-1.56","0.12"),OctCon.=c("-1.5","0.08"))
+x
+```
+
+***New Analysis***
+```{r echo=FALSE}
+y <- data.frame(TotalExper.=c("-2.14","2.2e-16"),TotalCon.=c("-6.14","0.008"),AugExper.=c("-1.66","2.2e-16"),SeptExper.=c("-0.18","1.425e-12"),OctExper.=c("-0.17","2.139e-13"),AugCon.=c("-3.03","0.0003"),SeptCon.=c("-1.5","0.14"),OctCon.=c("-1.62","0.07"))
+y
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
