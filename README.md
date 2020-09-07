@@ -6,3 +6,4 @@ I created a shinyapp in R to predict the mean ozone (ppb) in New York using maxi
 ## Music.rmd
 
 ## Water Analysis.rmd
+I worked with Dr. Slivovsky at California Polytechnic State University- San Luis Obispo to characterize the effects of using a smart home- wide water monitor in hopes of reducing water usage. I did this by comparing the water usage in households in 2018 and in 2019 to see if the monitor helped reduce water usage.
